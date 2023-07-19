@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 @RequiredPlayer
-@RequiredPermission(permission = "dream-spawn-plugin.command.spawn")
+@RequiredPermission(permission = "dream-spawnplugin.command.spawn")
 public class SpawnCommand extends BukkitCommand {
 
     private final SpawnManager spawnManager;
