@@ -1,4 +1,4 @@
-package cc.dreamcode.template.user;
+package cc.dreamcode.spawnplugin.user;
 
 import eu.okaeri.configs.annotation.NameModifier;
 import eu.okaeri.configs.annotation.NameStrategy;
