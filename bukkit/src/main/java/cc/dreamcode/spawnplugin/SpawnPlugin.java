@@ -12,23 +12,18 @@ import cc.dreamcode.platform.bukkit.component.ConfigurationComponentResolver;
 import cc.dreamcode.platform.bukkit.component.ListenerComponentResolver;
 import cc.dreamcode.platform.bukkit.component.RunnableComponentResolver;
 import cc.dreamcode.platform.component.ComponentManager;
-import cc.dreamcode.platform.persistence.DreamPersistence;
-import cc.dreamcode.platform.persistence.component.DocumentPersistenceComponentResolver;
-import cc.dreamcode.platform.persistence.component.DocumentRepositoryComponentResolver;
+import cc.dreamcode.spawnplugin.command.SetSpawnCommand;
+import cc.dreamcode.spawnplugin.command.SpawnCommand;
 import cc.dreamcode.spawnplugin.config.MessageConfig;
 import cc.dreamcode.spawnplugin.config.PluginConfig;
-import cc.dreamcode.spawnplugin.manager.SpawnManager;
-import cc.dreamcode.spawnplugin.user.UserRepository;
 import eu.okaeri.configs.serdes.OkaeriSerdesPack;
-import eu.okaeri.persistence.document.DocumentPersistence;
 import eu.okaeri.tasker.bukkit.BukkitTasker;
 import lombok.Getter;
 import lombok.NonNull;
 
-public final class SpawnPlugin extends DreamBukkitPlatform implements DreamBukkitConfig, DreamPersistence {
+public final class SpawnPlugin extends DreamBukkitPlatform implements DreamBukkitConfig {
 
     @Getter private static SpawnPlugin spawnPlugin;
-    @Getter private static SpawnManager spawnManager;
 
     @Override
     public void load(@NonNull ComponentManager componentManager) {
@@ -55,16 +50,9 @@ public final class SpawnPlugin extends DreamBukkitPlatform implements DreamBukki
         componentManager.registerComponent(PluginConfig.class, pluginConfig -> {
             componentManager.setDebug(pluginConfig.debug);
 
-            // register persistence + repositories
-            //this.registerInjectable(pluginConfig.storageConfig);
-
-            spawnManager = new SpawnManager(spawnPlugin, pluginConfig);
-            
-            componentManager.registerResolver(DocumentPersistenceComponentResolver.class);
-            componentManager.registerResolver(DocumentRepositoryComponentResolver.class);
-
-            componentManager.registerComponent(DocumentPersistence.class);
-            componentManager.registerComponent(UserRepository.class);
+            componentManager.registerComponent(SpawnManager.class);
+            componentManager.registerComponent(SpawnCommand.class);
+            componentManager.registerComponent(SetSpawnCommand.class);
         });
     }
 
@@ -83,13 +71,6 @@ public final class SpawnPlugin extends DreamBukkitPlatform implements DreamBukki
         return registry -> {
             registry.register(new BukkitNoticeSerdes());
             registry.register(new MenuBuilderSerdes());
-        };
-    }
-
-    @Override
-    public @NonNull OkaeriSerdesPack getPersistenceSerdesPack() {
-        return registry -> {
-
         };
     }
 

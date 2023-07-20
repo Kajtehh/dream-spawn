@@ -1,29 +1,26 @@
-package cc.dreamcode.spawnplugin.manager;
+package cc.dreamcode.spawnplugin;
 
 import cc.dreamcode.notice.minecraft.MinecraftNoticeType;
 import cc.dreamcode.notice.minecraft.bukkit.BukkitNotice;
 import cc.dreamcode.spawnplugin.config.PluginConfig;
 import cc.dreamcode.utilities.TimeUtil;
+import eu.okaeri.injector.annotation.Inject;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+@RequiredArgsConstructor(onConstructor_ = @Inject)
 public class SpawnManager {
 
-    private final JavaPlugin plugin;
+    private final SpawnPlugin plugin;
     private final PluginConfig config;
     private final Map<UUID, Boolean> teleport = new HashMap<>();
-
-    public SpawnManager(JavaPlugin plugin, PluginConfig config) {
-        this.plugin = plugin;
-        this.config = config;
-    }
 
     public void teleport(Player player) {
         Location spawnLocation = new Location(
@@ -48,7 +45,8 @@ public class SpawnManager {
             }
 
             long currentTime = System.currentTimeMillis();
-            long remainingTime = time - (currentTime - startTime);
+            long elapsedTime = currentTime - startTime;
+            long remainingTime = time - elapsedTime;
 
             if (remainingTime <= 0) {
                 player.teleport(spawnLocation);
@@ -58,17 +56,27 @@ public class SpawnManager {
                 return;
             }
 
-            String formattedTime = TimeUtil.convertMills(System.currentTimeMillis() + remainingTime);
-            BukkitNotice spawnTeleportMessage = config.spawnConfig.teleportMessage;
-            MinecraftNoticeType noticeType = spawnTeleportMessage.getType();
-            String messageContent = spawnTeleportMessage.getText().replace("%time%", formattedTime);
+            String formattedTime = TimeUtil.convertSeconds(TimeUnit.MILLISECONDS.toSeconds(remainingTime) + 1);
 
-            new BukkitNotice(noticeType, messageContent).send(player);
-        }, 0, 10L);
+            config.spawnConfig.teleportMessage.forEach(message -> {
+                MinecraftNoticeType noticeType = message.getType();
+                String messageContent = message.getText().replace("%time%", formattedTime);
+
+                new BukkitNotice(noticeType, messageContent).send(player);
+            });
+        }, 0, 20L);
+    }
+
+    public void setSpawnLocation(Location location) {
+        this.config.spawnConfig.locationX = location.getX();
+        this.config.spawnConfig.locationY = location.getY();
+        this.config.spawnConfig.locationZ = location.getZ();
+
+        this.config.save();
     }
 
     public boolean isPlayerTeleporting(Player player) {
-        return teleport.get(player.getUniqueId());
+        return teleport.containsKey(player.getUniqueId());
     }
 
     public boolean isPlayerMoved(Player player, Location oldLocation) {

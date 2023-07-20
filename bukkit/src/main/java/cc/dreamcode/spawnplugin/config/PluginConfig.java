@@ -13,8 +13,5 @@ public class PluginConfig extends OkaeriConfig {
     @Comment("Debug pokazuje dodatkowe informacje do konsoli. Lepiej wylaczyc. :P")
     public boolean debug = true;
 
-    //@Comment("Uzupelnij ponizsze menu danymi.")
-    //public StorageConfig storageConfig = new StorageConfig("dreamspawnplugin");
-
     public SpawnConfig spawnConfig = new SpawnConfig();
 }

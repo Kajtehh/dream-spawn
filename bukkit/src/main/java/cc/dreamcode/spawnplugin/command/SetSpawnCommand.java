@@ -3,9 +3,9 @@ package cc.dreamcode.spawnplugin.command;
 import cc.dreamcode.command.annotations.RequiredPermission;
 import cc.dreamcode.command.annotations.RequiredPlayer;
 import cc.dreamcode.command.bukkit.BukkitCommand;
-import cc.dreamcode.notice.minecraft.MinecraftNoticeType;
-import cc.dreamcode.notice.minecraft.bukkit.BukkitNotice;
-import cc.dreamcode.spawnplugin.config.PluginConfig;
+import cc.dreamcode.spawnplugin.SpawnManager;
+import cc.dreamcode.spawnplugin.config.MessageConfig;
+import eu.okaeri.injector.annotation.Inject;
 import lombok.NonNull;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -16,19 +16,23 @@ import java.util.List;
 @RequiredPermission(permission = "dream-spawnplugin.command.setspawn")
 public class SetSpawnCommand extends BukkitCommand {
 
-    private final PluginConfig pluginConfig;
+    private final SpawnManager spawnManager;
+    private final MessageConfig messageConfig;
 
-    public SetSpawnCommand(PluginConfig pluginConfig) {
+    @Inject
+    public SetSpawnCommand(final SpawnManager spawnManager, final MessageConfig messageConfig) {
         super("setspawn");
-        this.pluginConfig = pluginConfig;
+
+        this.spawnManager = spawnManager;
+        this.messageConfig = messageConfig;
     }
 
     @Override
     public void content(@NonNull CommandSender sender, @NonNull String[] args) {
         Player player = (Player) sender;
 
-        pluginConfig.spawnConfig.setSpawnLocation(player.getLocation());
-        new BukkitNotice(MinecraftNoticeType.CHAT, "&aUstawiono lokalizacje spawna!");
+        spawnManager.setSpawnLocation(player.getLocation());
+        messageConfig.setSpawn.send(player);
     }
 
     @Override
