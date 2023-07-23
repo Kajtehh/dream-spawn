@@ -20,8 +20,11 @@ import eu.okaeri.configs.annotation.Names;
 @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
 public class MessageConfig extends OkaeriConfig {
 
+    public BukkitNotice usage = new BukkitNotice(MinecraftNoticeType.CHAT, "&7Poprawne uzycie: &c{usage}");
     public BukkitNotice noPermission = new BukkitNotice(MinecraftNoticeType.CHAT, "&4Nie posiadasz uprawnien.");
     public BukkitNotice notPlayer = new BukkitNotice(MinecraftNoticeType.CHAT, "&4Nie jestes graczem.");
+    public BukkitNotice noPlayer = new BukkitNotice(MinecraftNoticeType.CHAT, "&4Ten gracz jest offline!");
     public BukkitNotice setSpawn = new BukkitNotice(MinecraftNoticeType.CHAT, "&aUstawiono lokalizacje spawna!");
     public BukkitNotice alreadyTeleporting = new BukkitNotice(MinecraftNoticeType.CHAT, "&cJesteś już podczas teleportacji!");
+    public BukkitNotice configReloaded = new BukkitNotice(MinecraftNoticeType.CHAT, "&aPrzeładowano plik konfiguracyjny!");
 }

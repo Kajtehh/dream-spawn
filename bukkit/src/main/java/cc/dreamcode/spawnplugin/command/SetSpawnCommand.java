@@ -1,6 +1,5 @@
 package cc.dreamcode.spawnplugin.command;
 
-import cc.dreamcode.command.annotations.RequiredPermission;
 import cc.dreamcode.command.annotations.RequiredPlayer;
 import cc.dreamcode.command.bukkit.BukkitCommand;
 import cc.dreamcode.spawnplugin.SpawnManager;
@@ -13,7 +12,6 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 @RequiredPlayer
-@RequiredPermission(permission = "dream-spawnplugin.command.setspawn")
 public class SetSpawnCommand extends BukkitCommand {
 
     private final SpawnManager spawnManager;
@@ -22,7 +20,6 @@ public class SetSpawnCommand extends BukkitCommand {
     @Inject
     public SetSpawnCommand(final SpawnManager spawnManager, final MessageConfig messageConfig) {
         super("setspawn");
-
         this.spawnManager = spawnManager;
         this.messageConfig = messageConfig;
     }

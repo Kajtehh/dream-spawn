@@ -14,12 +14,19 @@ import cc.dreamcode.platform.bukkit.component.RunnableComponentResolver;
 import cc.dreamcode.platform.component.ComponentManager;
 import cc.dreamcode.spawnplugin.command.SetSpawnCommand;
 import cc.dreamcode.spawnplugin.command.SpawnCommand;
+import cc.dreamcode.spawnplugin.command.SpawnPluginCommand;
 import cc.dreamcode.spawnplugin.config.MessageConfig;
 import cc.dreamcode.spawnplugin.config.PluginConfig;
+import cc.dreamcode.spawnplugin.controller.PlayerDeathController;
+import cc.dreamcode.spawnplugin.controller.PlayerJoinController;
+import cc.dreamcode.spawnplugin.hook.PluginHookManager;
 import eu.okaeri.configs.serdes.OkaeriSerdesPack;
 import eu.okaeri.tasker.bukkit.BukkitTasker;
 import lombok.Getter;
 import lombok.NonNull;
+
+import java.util.Arrays;
+import java.util.List;
 
 public final class SpawnPlugin extends DreamBukkitPlatform implements DreamBukkitConfig {
 
@@ -50,9 +57,19 @@ public final class SpawnPlugin extends DreamBukkitPlatform implements DreamBukki
         componentManager.registerComponent(PluginConfig.class, pluginConfig -> {
             componentManager.setDebug(pluginConfig.debug);
 
+            componentManager.registerComponent(PluginHookManager.class, PluginHookManager::registerHooks);
+
             componentManager.registerComponent(SpawnManager.class);
             componentManager.registerComponent(SpawnCommand.class);
+            componentManager.registerComponent(SpawnPluginCommand.class);
             componentManager.registerComponent(SetSpawnCommand.class);
+
+            List<Class<?>> controllers = Arrays.asList(
+                    PlayerDeathController.class,
+                    PlayerJoinController.class
+            );
+
+            controllers.forEach(componentManager::registerComponent);
         });
     }
 

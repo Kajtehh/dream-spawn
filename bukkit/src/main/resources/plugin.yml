@@ -6,3 +6,4 @@ website: "https://dreamcode.cc"
 author: "Kajteh_"
 prefix: "Dream-SpawnPlugin-Bukkit"
 api-version: 1.13
+softdepend: [WorldGuard]
