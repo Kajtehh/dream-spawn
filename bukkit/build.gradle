@@ -11,7 +11,7 @@ dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT'
 
     //-- worldguard --
-    compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.5'
+    compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.8'
 
     // -- dream-platform --
     implementation "cc.dreamcode.platform:core:1.9-pre.22"
