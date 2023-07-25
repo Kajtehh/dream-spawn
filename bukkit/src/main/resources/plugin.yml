@@ -4,6 +4,6 @@ name: "Dream-SpawnPlugin"
 description: "Dream-SpawnPlugin written by Kajteh_"
 website: "https://dreamcode.cc"
 author: "Kajteh_"
-prefix: "Dream-SpawnPlugin-Bukkit"
+prefix: "Dream-Spawn-Bukkit"
 api-version: 1.13
 softdepend: [WorldGuard]

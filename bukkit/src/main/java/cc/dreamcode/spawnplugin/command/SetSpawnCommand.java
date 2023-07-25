@@ -4,6 +4,7 @@ import cc.dreamcode.command.annotations.RequiredPlayer;
 import cc.dreamcode.command.bukkit.BukkitCommand;
 import cc.dreamcode.spawnplugin.SpawnManager;
 import cc.dreamcode.spawnplugin.config.MessageConfig;
+import cc.dreamcode.spawnplugin.config.PluginConfig;
 import eu.okaeri.injector.annotation.Inject;
 import lombok.NonNull;
 import org.bukkit.command.CommandSender;
@@ -15,12 +16,14 @@ import java.util.List;
 public class SetSpawnCommand extends BukkitCommand {
 
     private final SpawnManager spawnManager;
+    private final PluginConfig config;
     private final MessageConfig messageConfig;
 
     @Inject
-    public SetSpawnCommand(final SpawnManager spawnManager, final MessageConfig messageConfig) {
+    public SetSpawnCommand(final SpawnManager spawnManager, final PluginConfig config, final MessageConfig messageConfig) {
         super("setspawn");
         this.spawnManager = spawnManager;
+        this.config = config;
         this.messageConfig = messageConfig;
     }
 

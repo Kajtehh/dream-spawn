@@ -17,7 +17,7 @@ import cc.dreamcode.spawnplugin.command.SpawnCommand;
 import cc.dreamcode.spawnplugin.command.SpawnPluginCommand;
 import cc.dreamcode.spawnplugin.config.MessageConfig;
 import cc.dreamcode.spawnplugin.config.PluginConfig;
-import cc.dreamcode.spawnplugin.controller.PlayerDeathController;
+import cc.dreamcode.spawnplugin.controller.PlayerRespawnController;
 import cc.dreamcode.spawnplugin.controller.PlayerJoinController;
 import cc.dreamcode.spawnplugin.hook.PluginHookManager;
 import eu.okaeri.configs.serdes.OkaeriSerdesPack;
@@ -65,7 +65,7 @@ public final class SpawnPlugin extends DreamBukkitPlatform implements DreamBukki
             componentManager.registerComponent(SetSpawnCommand.class);
 
             List<Class<?>> controllers = Arrays.asList(
-                    PlayerDeathController.class,
+                    PlayerRespawnController.class,
                     PlayerJoinController.class
             );
 
@@ -90,5 +90,4 @@ public final class SpawnPlugin extends DreamBukkitPlatform implements DreamBukki
             registry.register(new MenuBuilderSerdes());
         };
     }
-
 }

@@ -20,12 +20,14 @@ public class PlayerJoinController implements Listener {
     }
 
     @EventHandler
-    public void onPlayerDeath(PlayerJoinEvent event) {
+    public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         if(config.spawnConfig.teleportAfterJoin) {
             player.teleport(spawnManager.getSpawnLocation());
+            return;
         }
-        if(config.spawnConfig.teleportAfterFirstJoin) {
+
+        if(config.spawnConfig.teleportAfterFirstJoin && !player.hasPlayedBefore()) {
             player.teleport(spawnManager.getSpawnLocation());
         }
     }

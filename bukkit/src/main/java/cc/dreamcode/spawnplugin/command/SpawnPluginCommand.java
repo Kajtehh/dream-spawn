@@ -3,7 +3,6 @@ package cc.dreamcode.spawnplugin.command;
 import cc.dreamcode.command.bukkit.BukkitCommand;
 import cc.dreamcode.spawnplugin.config.MessageConfig;
 import cc.dreamcode.spawnplugin.config.PluginConfig;
-import cc.dreamcode.utilities.builder.MapBuilder;
 import eu.okaeri.injector.annotation.Inject;
 import lombok.NonNull;
 import org.bukkit.command.CommandSender;
@@ -30,10 +29,10 @@ public class SpawnPluginCommand extends BukkitCommand {
             return;
         }
 
+        this.setUsage("/spawnplugin reload");
+
         if(args.length != 1) {
-            messageConfig.usage.send(sender, new MapBuilder<String, Object>()
-                    .put("{usage}", "/spawnplugin [reload]")
-                    .build());
+            messageConfig.usage.send(sender);
             return;
         }
 

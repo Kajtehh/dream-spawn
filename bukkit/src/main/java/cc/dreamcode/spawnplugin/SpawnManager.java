@@ -1,22 +1,22 @@
 package cc.dreamcode.spawnplugin;
 
-import cc.dreamcode.notice.minecraft.MinecraftNoticeType;
-import cc.dreamcode.notice.minecraft.bukkit.BukkitNotice;
 import cc.dreamcode.spawnplugin.config.PluginConfig;
-import cc.dreamcode.spawnplugin.helper.RegionCooldown;
+import cc.dreamcode.spawnplugin.config.SpawnConfig;
 import cc.dreamcode.spawnplugin.hook.PluginHookManager;
 import cc.dreamcode.spawnplugin.hook.worldguard.WorldGuardHook;
 import cc.dreamcode.utilities.TimeUtil;
+import cc.dreamcode.utilities.builder.MapBuilder;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import eu.okaeri.configs.exception.OkaeriException;
 import eu.okaeri.injector.annotation.Inject;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -33,43 +33,47 @@ public class SpawnManager {
         Location spawnLocation = getSpawnLocation();
         Location playerOldLocation = player.getLocation();
 
-        WorldGuardHook worldGuardHook = this.pluginHookManager.get(WorldGuardHook.class).get();
-
-        ApplicableRegionSet playerRegions = worldGuardHook.getRegions(player.getLocation());
-
         this.time = TimeUnit.SECONDS.toMillis(config.spawnConfig.teleportTime);
 
-        if(config.spawnConfig.regionCooldownEnabled) {
-            Optional<RegionCooldown> optionalRegionCooldown = this.config.spawnConfig.regionCooldowns.stream()
-                    .filter(region -> playerRegions.getRegions()
-                            .stream().anyMatch(playerRegion -> playerRegion.getId().equals(region.getRegionName())))
-                    .findFirst();
+        SpawnConfig spawnConfig = config.spawnConfig;
 
-            if (optionalRegionCooldown.isPresent()) {
-                RegionCooldown regionCooldown = optionalRegionCooldown.get();
-                long cooldown = regionCooldown.getCooldown();
-                this.time = TimeUnit.SECONDS.toMillis(cooldown);
+        spawnConfig.groupCooldowns.forEach(groupCooldown -> {
+            for(String key: groupCooldown.keySet()) {
+                if(isPlayerInGroup(player, key)) {
+                    this.time = TimeUnit.SECONDS.toMillis(groupCooldown.get(key));
+                }
             }
+        });
+
+        Plugin worldGuard = plugin.getServer().getPluginManager().getPlugin("WorldGuard");
+
+        if (worldGuard != null && spawnConfig.regionCooldownEnabled) {
+            this.pluginHookManager.get(WorldGuardHook.class).ifPresent(worldGuardHook -> spawnConfig.regionCooldowns.forEach(regionCooldown -> {
+                for (String key : regionCooldown.keySet()) {
+                    ApplicableRegionSet playerRegions = worldGuardHook.getRegions(player.getLocation());
+                    if (playerRegions.getRegions().stream().anyMatch(playerRegion -> playerRegion.getId().equals(key))) {
+                        this.time = TimeUnit.SECONDS.toMillis(regionCooldown.get(key));
+                    }
+                }
+            }));
+
         }
 
         long startTime = System.currentTimeMillis();
 
         addEffects(player);
 
-        config.spawnConfig.teleportSounds.forEach(sound -> {
-            player.playSound(player.getLocation(), sound, 1.0F, 1.0F);
-        });
-
         teleport.put(player.getUniqueId(), true);
 
         Bukkit.getScheduler().runTaskTimer(plugin, () -> { // Task
             if(!player.isOnline()) {
                 teleport.remove(player.getUniqueId());
+                removeEffects(player);
                 Bukkit.getScheduler().cancelTasks(plugin);
                 return;
             }
             if (isPlayerMoved(player, playerOldLocation)) {
-                config.spawnConfig.moveMessage.send(player);
+                spawnConfig.moveMessage.send(player);
                 teleport.remove(player.getUniqueId());
                 removeEffects(player);
                 Bukkit.getScheduler().cancelTasks(plugin);
@@ -83,7 +87,7 @@ public class SpawnManager {
             if (remainingTime <= 0) {
                 player.teleport(spawnLocation);
                 teleport.remove(player.getUniqueId());
-                config.spawnConfig.successMessage.send(player);
+                spawnConfig.successMessage.send(player);
                 removeEffects(player);
                 Bukkit.getScheduler().cancelTasks(plugin);
                 return;
@@ -91,11 +95,10 @@ public class SpawnManager {
 
             String formattedTime = TimeUtil.convertSeconds(TimeUnit.MILLISECONDS.toSeconds(remainingTime) + 1);
 
-            config.spawnConfig.teleportMessage.forEach(message -> {
-                MinecraftNoticeType noticeType = message.getType();
-                String messageContent = message.getText().replace("%time%", formattedTime);
-
-                new BukkitNotice(noticeType, messageContent).send(player);
+            spawnConfig.teleportMessage.forEach(bukkitNotice -> bukkitNotice.send(player, new MapBuilder<String, Object>()
+                    .put("time", formattedTime).build()));
+            spawnConfig.teleportSounds.forEach(sound -> {
+                player.playSound(player.getLocation(), sound, 1.0F, 1.0F);
             });
         }, 0, 20L);
     }
@@ -114,7 +117,11 @@ public class SpawnManager {
         this.config.spawnConfig.locationY = location.getY();
         this.config.spawnConfig.locationZ = location.getZ();
 
-        this.config.save();
+        try {
+            this.config.save();
+        } catch (OkaeriException e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean isPlayerTeleporting(Player player) {
@@ -131,13 +138,15 @@ public class SpawnManager {
 
     private void addEffects(Player player) {
         config.spawnConfig.teleportEffects.forEach(effect -> {
-            player.addPotionEffect(effect.getPotionEffect());
+            player.addPotionEffect(effect.createEffect(Integer.MAX_VALUE, 1));
         });
     }
 
     private void removeEffects(Player player) {
-        config.spawnConfig.teleportEffects.forEach(effect -> {
-           player.removePotionEffect(effect.getPotionEffect().getType());
-        });
+        config.spawnConfig.teleportEffects.forEach(player::removePotionEffect);
+    }
+
+    private boolean isPlayerInGroup(Player player, String group) {
+        return player.hasPermission("group." + group);
     }
 }

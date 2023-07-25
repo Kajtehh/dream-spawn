@@ -2,23 +2,21 @@ package cc.dreamcode.spawnplugin.config;
 
 import cc.dreamcode.notice.minecraft.MinecraftNoticeType;
 import cc.dreamcode.notice.minecraft.bukkit.BukkitNotice;
-import cc.dreamcode.spawnplugin.helper.RegionCooldown;
-import cc.dreamcode.spawnplugin.helper.TeleportEffect;
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
 import org.bukkit.Sound;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SpawnConfig extends OkaeriConfig {
 
     @Comment("Wiadomość, która ma być wyświetlana podczas teleportacji.")
-    public List<BukkitNotice> teleportMessage = Arrays.asList(
-            new BukkitNotice(MinecraftNoticeType.SUBTITLE, "&aTrwa teleportacja..."),
-            new BukkitNotice(MinecraftNoticeType.ACTION_BAR, "&aZostaniesz przeteleportowany za: &f%time%")
+    public List<BukkitNotice> teleportMessage = Collections.singletonList(
+            new BukkitNotice(MinecraftNoticeType.TITLE_SUBTITLE, "&aTrwa teleportacja... %NEWLINE% &f{time}")
     );
 
     @Comment("Wiadomość, która ma zostać wysłana gdy gracz zostanie przeteleportowany na spawna.")
@@ -43,8 +41,8 @@ public class SpawnConfig extends OkaeriConfig {
     public double locationZ = 0;
 
     @Comment("Efekty, które będą nadawane podczas teleportacji.")
-    public List<TeleportEffect> teleportEffects = Collections.singletonList(
-            new TeleportEffect(PotionEffectType.BLINDNESS, 1)
+    public List<PotionEffectType> teleportEffects = Collections.singletonList(
+            PotionEffectType.BLINDNESS
     );
 
     @Comment("Dźwięki, które będą odtwarzane podczas teleportacji.")
@@ -54,11 +52,16 @@ public class SpawnConfig extends OkaeriConfig {
     public boolean regionCooldownEnabled = false;
 
     @Comment("Cooldown teleportacji danego regionu WorldGuard.")
-    public List<RegionCooldown> regionCooldowns = Collections.singletonList(
-            new RegionCooldown("spawn", 0)
+    public List<Map<String, Integer>> regionCooldowns = Collections.singletonList(
+            new HashMap<String, Integer>(){{ put("spawn", 0); }}
     );
 
-    @Comment("Po włączeniu gracz będzie teleportowany na spawna po śmierci.")
+    @Comment("Cooldown teleportacji dla danej rangi Luckperms.")
+    public List<Map<String, Integer>> groupCooldowns = Collections.singletonList(
+            new HashMap<String, Integer>(){{ put("vip", 3); }}
+    );
+
+    @Comment("Po włączeniu gracz będzie teleportowany na spawna po śmierci oraz nie będzie musiał klikać przycisku respawn.")
     public boolean teleportAfterDeath = true;
 
     @Comment("Po włączeniu gracz będzie teleportowany na spawna podczas każdego wejścia na serwer.")
@@ -70,6 +73,6 @@ public class SpawnConfig extends OkaeriConfig {
     @Comment("Permisja, która pozwala na teleportowanie się na spawna bez cooldownu.")
     public String bypassPermission = "dream-spawn.bypass";
 
-    @Comment("Permisja administratora do użycia komendy: /spawn [set/reload].")
+    @Comment("Permisja administratora do użycia komendy: /spawnplugin reload.")
     public String adminPermission = "dream-spawn.admin";
 }

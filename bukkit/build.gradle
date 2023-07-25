@@ -59,7 +59,7 @@ dependencies {
 shadowJar {
     checkstyleTest
 
-    archiveFileName = "Dream-SpawnPlugin-Bukkit-${project.version}.jar"
+    archiveFileName = "Dream-Spawn-Bukkit-${project.version}.jar"
 
     minimize()
 
