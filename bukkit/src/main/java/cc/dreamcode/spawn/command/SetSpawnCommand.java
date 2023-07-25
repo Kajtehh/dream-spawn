@@ -1,10 +1,10 @@
-package cc.dreamcode.spawnplugin.command;
+package cc.dreamcode.spawn.command;
 
 import cc.dreamcode.command.annotations.RequiredPlayer;
 import cc.dreamcode.command.bukkit.BukkitCommand;
-import cc.dreamcode.spawnplugin.SpawnManager;
-import cc.dreamcode.spawnplugin.config.MessageConfig;
-import cc.dreamcode.spawnplugin.config.PluginConfig;
+import cc.dreamcode.spawn.SpawnManager;
+import cc.dreamcode.spawn.config.MessageConfig;
+import cc.dreamcode.spawn.config.PluginConfig;
 import eu.okaeri.injector.annotation.Inject;
 import lombok.NonNull;
 import org.bukkit.command.CommandSender;
@@ -30,6 +30,11 @@ public class SetSpawnCommand extends BukkitCommand {
     @Override
     public void content(@NonNull CommandSender sender, @NonNull String[] args) {
         Player player = (Player) sender;
+
+        if(!player.hasPermission(config.adminPermission)) {
+            messageConfig.noPermission.send(sender);
+            return;
+        }
 
         spawnManager.setSpawnLocation(player.getLocation());
         messageConfig.setSpawn.send(player);

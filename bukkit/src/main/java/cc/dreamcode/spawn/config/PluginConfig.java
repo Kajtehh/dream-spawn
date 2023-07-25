@@ -1,44 +1,33 @@
-package cc.dreamcode.spawnplugin.config;
+package cc.dreamcode.spawn.config;
 
-import cc.dreamcode.notice.minecraft.MinecraftNoticeType;
-import cc.dreamcode.notice.minecraft.bukkit.BukkitNotice;
+import cc.dreamcode.platform.bukkit.component.configuration.Configuration;
 import eu.okaeri.configs.OkaeriConfig;
-import eu.okaeri.configs.annotation.Comment;
+import eu.okaeri.configs.annotation.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.potion.PotionEffectType;
 
+import java.time.Duration;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SpawnConfig extends OkaeriConfig {
-
-    @Comment("Wiadomość, która ma być wyświetlana podczas teleportacji.")
-    public List<BukkitNotice> teleportMessage = Collections.singletonList(
-            new BukkitNotice(MinecraftNoticeType.TITLE_SUBTITLE, "&aTrwa teleportacja... %NEWLINE% &f{time}")
-    );
-
-    @Comment("Wiadomość, która ma zostać wysłana gdy gracz zostanie przeteleportowany na spawna.")
-    public BukkitNotice successMessage = new BukkitNotice(MinecraftNoticeType.SUBTITLE, "&aTwoja teleportacja dobiegła końca!");
-
-    @Comment("Wiadomość, która jest wysyłana gdy gracz się ruszy podczas teleportacji.")
-    public BukkitNotice moveMessage = new BukkitNotice(MinecraftNoticeType.SUBTITLE, "&cTwoja teleportacja została przerwana!");
+@Configuration(
+        child = "config.yml"
+)
+@Header("## Dream-SpawnPlugin (Main-Config) ##")
+@Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
+public class PluginConfig extends OkaeriConfig {
+    @Comment("Debug pokazuje dodatkowe informacje do konsoli. Lepiej wylaczyc. :P")
+    public boolean debug = true;
 
     @Comment("Czas teleportacji w sekundach.")
-    public int teleportTime = 5;
+    public Duration teleportTime = Duration.ofSeconds(5);
 
-    @Comment("Świat na którym znajduję się spawn.")
-    public String locationWorld = "world";
-
-    @Comment("Koordynaty X spawna.")
-    public double locationX = 0;
-
-    @Comment("Koordynaty Y spawna.")
-    public double locationY = 0;
-
-    @Comment("Koordynaty Z spawna.")
-    public double locationZ = 0;
+    @Comment("Lokalizacja spawna.")
+    public Location spawnLocation = new Location(Bukkit.getWorld("world"), 0.0, 0.0, 0.0, 0, 0);
 
     @Comment("Efekty, które będą nadawane podczas teleportacji.")
     public List<PotionEffectType> teleportEffects = Collections.singletonList(
@@ -61,8 +50,11 @@ public class SpawnConfig extends OkaeriConfig {
             new HashMap<String, Integer>(){{ put("vip", 3); }}
     );
 
-    @Comment("Po włączeniu gracz będzie teleportowany na spawna po śmierci oraz nie będzie musiał klikać przycisku respawn.")
+    @Comment("Po włączeniu gracz będzie teleportowany na spawna po śmierci.")
     public boolean teleportAfterDeath = true;
+
+    @Comment("Po włączeniu gracz nie będzie musiał klikać przycisku respawn po śmierci.")
+    public boolean autoRespawn = true;
 
     @Comment("Po włączeniu gracz będzie teleportowany na spawna podczas każdego wejścia na serwer.")
     public boolean teleportAfterJoin = false;
@@ -73,6 +65,6 @@ public class SpawnConfig extends OkaeriConfig {
     @Comment("Permisja, która pozwala na teleportowanie się na spawna bez cooldownu.")
     public String bypassPermission = "dream-spawn.bypass";
 
-    @Comment("Permisja administratora do użycia komendy: /spawnplugin reload.")
+    @Comment("Permisja administratora do użycia komendy: /spawnplugin reload, /setspawn.")
     public String adminPermission = "dream-spawn.admin";
 }

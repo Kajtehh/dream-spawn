@@ -1,7 +1,7 @@
-package cc.dreamcode.spawnplugin.controller;
+package cc.dreamcode.spawn.controller;
 
-import cc.dreamcode.spawnplugin.SpawnManager;
-import cc.dreamcode.spawnplugin.config.PluginConfig;
+import cc.dreamcode.spawn.SpawnManager;
+import cc.dreamcode.spawn.config.PluginConfig;
 import eu.okaeri.injector.annotation.Inject;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -22,12 +22,12 @@ public class PlayerJoinController implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        if(config.spawnConfig.teleportAfterJoin) {
+        if(config.teleportAfterJoin) {
             player.teleport(spawnManager.getSpawnLocation());
             return;
         }
 
-        if(config.spawnConfig.teleportAfterFirstJoin && !player.hasPlayedBefore()) {
+        if(config.teleportAfterFirstJoin && !player.hasPlayedBefore()) {
             player.teleport(spawnManager.getSpawnLocation());
         }
     }

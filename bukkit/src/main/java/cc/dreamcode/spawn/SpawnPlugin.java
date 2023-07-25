@@ -1,4 +1,4 @@
-package cc.dreamcode.spawnplugin;
+package cc.dreamcode.spawn;
 
 import cc.dreamcode.command.bukkit.BukkitCommandProvider;
 import cc.dreamcode.menu.bukkit.BukkitMenuProvider;
@@ -12,21 +12,21 @@ import cc.dreamcode.platform.bukkit.component.ConfigurationComponentResolver;
 import cc.dreamcode.platform.bukkit.component.ListenerComponentResolver;
 import cc.dreamcode.platform.bukkit.component.RunnableComponentResolver;
 import cc.dreamcode.platform.component.ComponentManager;
-import cc.dreamcode.spawnplugin.command.SetSpawnCommand;
-import cc.dreamcode.spawnplugin.command.SpawnCommand;
-import cc.dreamcode.spawnplugin.command.SpawnPluginCommand;
-import cc.dreamcode.spawnplugin.config.MessageConfig;
-import cc.dreamcode.spawnplugin.config.PluginConfig;
-import cc.dreamcode.spawnplugin.controller.PlayerRespawnController;
-import cc.dreamcode.spawnplugin.controller.PlayerJoinController;
-import cc.dreamcode.spawnplugin.hook.PluginHookManager;
+import cc.dreamcode.spawn.command.SetSpawnCommand;
+import cc.dreamcode.spawn.command.SpawnCommand;
+import cc.dreamcode.spawn.command.SpawnPluginCommand;
+import cc.dreamcode.spawn.config.MessageConfig;
+import cc.dreamcode.spawn.config.PluginConfig;
+import cc.dreamcode.spawn.controller.PlayerDeathController;
+import cc.dreamcode.spawn.controller.PlayerJoinController;
+import cc.dreamcode.spawn.controller.PlayerRespawnController;
+import cc.dreamcode.spawn.hook.PluginHookManager;
 import eu.okaeri.configs.serdes.OkaeriSerdesPack;
 import eu.okaeri.tasker.bukkit.BukkitTasker;
 import lombok.Getter;
 import lombok.NonNull;
 
 import java.util.Arrays;
-import java.util.List;
 
 public final class SpawnPlugin extends DreamBukkitPlatform implements DreamBukkitConfig {
 
@@ -57,30 +57,31 @@ public final class SpawnPlugin extends DreamBukkitPlatform implements DreamBukki
         componentManager.registerComponent(PluginConfig.class, pluginConfig -> {
             componentManager.setDebug(pluginConfig.debug);
 
-            componentManager.registerComponent(PluginHookManager.class, PluginHookManager::registerHooks);
+            if (this.getServer().getPluginManager().getPlugin("WorldGuard") != null) {
+                componentManager.registerComponent(PluginHookManager.class, PluginHookManager::registerHooks);
+            }
 
             componentManager.registerComponent(SpawnManager.class);
+            componentManager.registerComponent(SpawnService.class);
             componentManager.registerComponent(SpawnCommand.class);
             componentManager.registerComponent(SpawnPluginCommand.class);
             componentManager.registerComponent(SetSpawnCommand.class);
 
-            List<Class<?>> controllers = Arrays.asList(
-                    PlayerRespawnController.class,
-                    PlayerJoinController.class
-            );
-
-            controllers.forEach(componentManager::registerComponent);
+            Arrays.asList(
+                    PlayerDeathController.class,
+                    PlayerJoinController.class,
+                    PlayerRespawnController.class
+            ).forEach(componentManager::registerComponent);
         });
     }
 
     @Override
     public void disable() {
-        // features need to be call when server is stopping
     }
 
     @Override
     public @NonNull DreamVersion getDreamVersion() {
-        return DreamVersion.create("Dream-SpawnPlugin", "1.0", "Kajteh_");
+        return DreamVersion.create("Dream-SpawnPlugin", "1.0.1", "Kajteh_");
     }
 
     @Override

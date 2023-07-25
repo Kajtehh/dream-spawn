@@ -1,8 +1,9 @@
-package cc.dreamcode.spawnplugin.command;
+package cc.dreamcode.spawn.command;
 
 import cc.dreamcode.command.bukkit.BukkitCommand;
-import cc.dreamcode.spawnplugin.config.MessageConfig;
-import cc.dreamcode.spawnplugin.config.PluginConfig;
+import cc.dreamcode.spawn.config.MessageConfig;
+import cc.dreamcode.spawn.config.PluginConfig;
+import cc.dreamcode.utilities.builder.MapBuilder;
 import eu.okaeri.injector.annotation.Inject;
 import lombok.NonNull;
 import org.bukkit.command.CommandSender;
@@ -24,15 +25,13 @@ public class SpawnPluginCommand extends BukkitCommand {
 
     @Override
     public void content(@NonNull CommandSender sender, @NonNull String[] args) {
-        if(!sender.hasPermission(config.spawnConfig.adminPermission)) {
+        if(!sender.hasPermission(config.adminPermission)) {
             messageConfig.noPermission.send(sender);
             return;
         }
 
-        this.setUsage("/spawnplugin reload");
-
         if(args.length != 1) {
-            messageConfig.usage.send(sender);
+            messageConfig.usage.send(sender, new MapBuilder<String, Object>().put("usage", "/spawnplugin reload").build());
             return;
         }
 
@@ -49,7 +48,7 @@ public class SpawnPluginCommand extends BukkitCommand {
 
     @Override
     public List<String> tab(@NonNull CommandSender sender, @NonNull String[] args) {
-        if(args.length == 1 && sender.hasPermission(config.spawnConfig.adminPermission)) {
+        if(args.length == 1 && sender.hasPermission(config.adminPermission)) {
             return Collections.singletonList("reload");
         }
         return null;

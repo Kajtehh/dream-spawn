@@ -1,5 +1,5 @@
-main: "cc.dreamcode.spawnplugin.SpawnPlugin"
-version: "1.0"
+main: "cc.dreamcode.spawn.SpawnPlugin"
+version: "1.0.1"
 name: "Dream-SpawnPlugin"
 description: "Dream-SpawnPlugin written by Kajteh_"
 website: "https://dreamcode.cc"

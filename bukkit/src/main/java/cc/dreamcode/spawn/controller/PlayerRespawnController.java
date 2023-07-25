@@ -1,7 +1,7 @@
-package cc.dreamcode.spawnplugin.controller;
+package cc.dreamcode.spawn.controller;
 
-import cc.dreamcode.spawnplugin.SpawnManager;
-import cc.dreamcode.spawnplugin.config.PluginConfig;
+import cc.dreamcode.spawn.SpawnManager;
+import cc.dreamcode.spawn.config.PluginConfig;
 import eu.okaeri.injector.annotation.Inject;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -9,18 +9,18 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 
 public class PlayerRespawnController implements Listener {
 
-    private final SpawnManager spawnManager;
     private final PluginConfig config;
+    private final SpawnManager spawnManager;
 
     @Inject
-    public PlayerRespawnController(final SpawnManager spawnManager, final PluginConfig config) {
-        this.spawnManager = spawnManager;
+    public PlayerRespawnController(final PluginConfig config, final SpawnManager spawnManager) {
         this.config = config;
+        this.spawnManager = spawnManager;
     }
 
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
-        if(config.spawnConfig.teleportAfterDeath) {
+        if(config.teleportAfterDeath) {
             event.setRespawnLocation(spawnManager.getSpawnLocation());
         }
     }

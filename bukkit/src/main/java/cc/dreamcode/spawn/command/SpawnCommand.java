@@ -1,9 +1,10 @@
-package cc.dreamcode.spawnplugin.command;
+package cc.dreamcode.spawn.command;
 
 import cc.dreamcode.command.bukkit.BukkitCommand;
-import cc.dreamcode.spawnplugin.SpawnManager;
-import cc.dreamcode.spawnplugin.config.MessageConfig;
-import cc.dreamcode.spawnplugin.config.PluginConfig;
+import cc.dreamcode.spawn.SpawnManager;
+import cc.dreamcode.spawn.SpawnService;
+import cc.dreamcode.spawn.config.MessageConfig;
+import cc.dreamcode.spawn.config.PluginConfig;
 import eu.okaeri.injector.annotation.Inject;
 import lombok.NonNull;
 import org.bukkit.Bukkit;
@@ -14,13 +15,15 @@ import java.util.List;
 
 public class SpawnCommand extends BukkitCommand {
 
+    private final SpawnService spawnService;
     private final SpawnManager spawnManager;
     private final PluginConfig config;
     private final MessageConfig messageConfig;
 
     @Inject
-    public SpawnCommand(final SpawnManager spawnManager, final PluginConfig config, final MessageConfig messageConfig) {
+    public SpawnCommand(final SpawnService spawnService, final SpawnManager spawnManager, final PluginConfig config, final MessageConfig messageConfig) {
         super("spawn");
+        this.spawnService = spawnService;
         this.spawnManager = spawnManager;
         this.config = config;
         this.messageConfig = messageConfig;
@@ -41,16 +44,16 @@ public class SpawnCommand extends BukkitCommand {
                     return;
                 }
 
-                if(player.hasPermission(config.spawnConfig.bypassPermission)) {
-                    config.spawnConfig.successMessage.send(player);
+                if(player.hasPermission(config.bypassPermission)) {
+                    messageConfig.successMessage.send(player);
                     player.teleport(spawnManager.getSpawnLocation());
                     return;
                 }
 
-                spawnManager.teleport(player);
+                spawnService.teleport(player);
                 break;
             case 1:
-                if(!sender.hasPermission(config.spawnConfig.adminPermission)) {
+                if(!sender.hasPermission(config.adminPermission)) {
                     messageConfig.noPermission.send(sender);
                     return;
                 }
@@ -62,7 +65,7 @@ public class SpawnCommand extends BukkitCommand {
                     return;
                 }
 
-                config.spawnConfig.successMessage.send(targetPlayer);
+                messageConfig.successMessage.send(targetPlayer);
                 targetPlayer.teleport(spawnManager.getSpawnLocation());
                 break;
         }
