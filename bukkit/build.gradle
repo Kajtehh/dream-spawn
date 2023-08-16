@@ -26,8 +26,8 @@ dependencies {
 
     // -- dream-notice --
     implementation "cc.dreamcode.notice:minecraft:1.3.3"
-    implementation "cc.dreamcode.notice:bukkit:1.3.3"
-    implementation "cc.dreamcode.notice:bukkit-serdes:1.3.3"
+    implementation "cc.dreamcode.notice:bukkit:1.3.5"
+    implementation "cc.dreamcode.notice:bukkit-serdes:1.3.5"
 
     // -- dream-command --
     implementation "cc.dreamcode.command:core:1.4.12"
