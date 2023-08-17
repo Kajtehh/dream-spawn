@@ -13,7 +13,7 @@ import java.util.List;
         child = "message.yml"
 )
 @Headers({
-        @Header("## Dream-SpawnPlugin (Message-Config) ##"),
+        @Header("## Dream-Spawn (Message-Config) ##"),
         @Header("Dostepne type: (DO_NOT_SEND, CHAT, ACTION_BAR, SUBTITLE, TITLE, TITLE_SUBTITLE)")
 })
 @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)

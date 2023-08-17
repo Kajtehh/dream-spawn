@@ -76,7 +76,7 @@ public final class SpawnPlugin extends DreamBukkitPlatform implements DreamBukki
 
     @Override
     public @NonNull DreamVersion getDreamVersion() {
-        return DreamVersion.create("Dream-SpawnPlugin", "1.0.1", "Kajteh_");
+        return DreamVersion.create("Dream-Spawn", "1.0.1", "Kajteh_");
     }
 
     @Override

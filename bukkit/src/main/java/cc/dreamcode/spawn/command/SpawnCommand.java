@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
 
 import java.time.Instant;
 import java.util.List;
@@ -42,7 +43,6 @@ public class SpawnCommand extends BukkitCommand {
                     return;
                 }
 
-                long currentTimeMillis = System.currentTimeMillis();
                 Player player = (Player) sender;
 
                 if (spawnManager.isPlayerTeleporting(player)) {
@@ -76,6 +76,10 @@ public class SpawnCommand extends BukkitCommand {
                         }
                     }));
 
+                }
+
+                if(config.teleportEffectsEnabled) {
+                    config.teleportEffects.forEach(effect -> player.addPotionEffect(new PotionEffect(effect, Integer.MAX_VALUE, 0, false)));
                 }
 
                 spawnManager.addTeleport(player, Instant.now().plusSeconds(1).plusMillis(time).toEpochMilli());

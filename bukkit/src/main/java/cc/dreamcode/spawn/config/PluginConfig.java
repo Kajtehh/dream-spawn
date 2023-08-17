@@ -17,7 +17,7 @@ import java.util.Map;
 @Configuration(
         child = "config.yml"
 )
-@Header("## Dream-SpawnPlugin (Main-Config) ##")
+@Header("## Dream-Spawn (Main-Config) ##")
 @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
 public class PluginConfig extends OkaeriConfig {
     @Comment("Debug pokazuje dodatkowe informacje do konsoli. Lepiej wylaczyc. :P")

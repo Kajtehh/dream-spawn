@@ -6,7 +6,6 @@ import cc.dreamcode.spawn.config.MessageConfig;
 import cc.dreamcode.spawn.config.PluginConfig;
 import eu.okaeri.injector.annotation.Inject;
 import lombok.RequiredArgsConstructor;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -29,8 +28,9 @@ public class TeleportController implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        if(spawnManager.isPlayerTeleporting(player)) {
-            spawnManager.removeTeleport(player);
+        if(this.spawnManager.isPlayerTeleporting(player)) {
+            this.spawnManager.removeTeleport(player);
+            this.config.teleportEffects.forEach(player::removePotionEffect);
         }
     }
 
@@ -41,42 +41,44 @@ public class TeleportController implements Listener {
             return;
         }
 
-        if(!spawnManager.isPlayerTeleporting(event.getPlayer())) return;
+        if(!this.spawnManager.isPlayerTeleporting(event.getPlayer())) return;
 
         Player player = event.getPlayer();
 
-        messageConfig.moveMessage.send(player);
-        spawnManager.removeTeleport(player);
+        this.messageConfig.moveMessage.send(player);
+        this.spawnManager.removeTeleport(player);
+        this.config.teleportEffects.forEach(player::removePotionEffect);
     }
 
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
-        if(config.teleportAfterDeath) {
-            event.setRespawnLocation(spawnManager.getSpawnLocation());
+        if(this.config.teleportAfterDeath) {
+            event.setRespawnLocation(this.spawnManager.getSpawnLocation());
         }
     }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        if(config.teleportAfterJoin) {
-            player.teleport(spawnManager.getSpawnLocation());
+        if(this.config.teleportAfterJoin) {
+            player.teleport(this.spawnManager.getSpawnLocation());
             return;
         }
 
-        if(config.teleportAfterFirstJoin && !player.hasPlayedBefore()) {
-            player.teleport(spawnManager.getSpawnLocation());
+        if(this.config.teleportAfterFirstJoin && !player.hasPlayedBefore()) {
+            player.teleport(this.spawnManager.getSpawnLocation());
         }
     }
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player player = event.getEntity();
-        if(spawnManager.isPlayerTeleporting(player)) {
-            spawnManager.removeTeleport(player);
+        if(this.spawnManager.isPlayerTeleporting(player)) {
+            this.spawnManager.removeTeleport(player);
+            this.config.teleportEffects.forEach(player::removePotionEffect);
         }
-        if(config.autoRespawn) {
-            Bukkit.getScheduler().runTaskLater(this.spawnPlugin, () -> player.spigot().respawn(), 0);
+        if(this.config.autoRespawn) {
+            this.spawnPlugin.getServer().getScheduler().runTask(this.spawnPlugin, () -> player.spigot().respawn());
         }
     }
 }

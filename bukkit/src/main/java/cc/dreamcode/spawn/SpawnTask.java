@@ -33,7 +33,7 @@ public class SpawnTask implements Runnable {
             }
 
             if (this.config.teleportEffectsEnabled) {
-                this.config.teleportEffects.forEach(player::removePotionEffect);
+                this.spawnPlugin.getServer().getScheduler().runTask(this.spawnPlugin, () -> this.config.teleportEffects.forEach(player::removePotionEffect));
             }
 
             this.spawnPlugin.getServer().getScheduler().runTask(this.spawnPlugin, () -> player.teleport(config.spawnLocation));
