@@ -9,20 +9,25 @@ import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor(onConstructor_ = @Inject)
 public class SpawnManager {
 
     private final PluginConfig config;
-    private final Map<UUID, Boolean> teleport = new HashMap<>();
+    private final Map<UUID, Long> teleport = new HashMap<>();
 
-    public void addTeleport(Player player) {
-        teleport.put(player.getUniqueId(), true);
+    public void addTeleport(Player player, long time) {
+        teleport.put(player.getUniqueId(), time);
     }
 
     public void removeTeleport(Player player) {
         teleport.remove(player.getUniqueId());
+    }
+
+    public Optional<Long> getTeleport(Player player) {
+        return Optional.ofNullable(teleport.get(player.getUniqueId()));
     }
 
     public Location getSpawnLocation() {
@@ -39,6 +44,6 @@ public class SpawnManager {
     }
 
     public boolean isPlayerTeleporting(Player player) {
-        return teleport.containsKey(player.getUniqueId());
+        return getTeleport(player).map(teleport -> teleport > System.currentTimeMillis()).orElse(false);
     }
 }

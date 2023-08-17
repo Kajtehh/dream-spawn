@@ -38,6 +38,7 @@ public class SpawnPluginCommand extends BukkitCommand {
         if (args[0].equalsIgnoreCase("reload")) {
             try {
                 this.config.load();
+                this.messageConfig.load();
             } catch (Exception e) {
                 e.printStackTrace();
             }

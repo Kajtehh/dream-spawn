@@ -17,9 +17,7 @@ import cc.dreamcode.spawn.command.SpawnCommand;
 import cc.dreamcode.spawn.command.SpawnPluginCommand;
 import cc.dreamcode.spawn.config.MessageConfig;
 import cc.dreamcode.spawn.config.PluginConfig;
-import cc.dreamcode.spawn.controller.PlayerDeathController;
-import cc.dreamcode.spawn.controller.PlayerJoinController;
-import cc.dreamcode.spawn.controller.PlayerRespawnController;
+import cc.dreamcode.spawn.controller.TeleportController;
 import cc.dreamcode.spawn.hook.PluginHookManager;
 import eu.okaeri.configs.serdes.OkaeriSerdesPack;
 import eu.okaeri.tasker.bukkit.BukkitTasker;
@@ -61,16 +59,13 @@ public final class SpawnPlugin extends DreamBukkitPlatform implements DreamBukki
                 componentManager.registerComponent(PluginHookManager.class, PluginHookManager::registerHooks);
             }
 
-            componentManager.registerComponent(SpawnManager.class);
-            componentManager.registerComponent(SpawnService.class);
-            componentManager.registerComponent(SpawnCommand.class);
-            componentManager.registerComponent(SpawnPluginCommand.class);
-            componentManager.registerComponent(SetSpawnCommand.class);
-
             Arrays.asList(
-                    PlayerDeathController.class,
-                    PlayerJoinController.class,
-                    PlayerRespawnController.class
+                    SpawnManager.class,
+                    SpawnTask.class,
+                    SpawnCommand.class,
+                    SpawnPluginCommand.class,
+                    SetSpawnCommand.class,
+                    TeleportController.class
             ).forEach(componentManager::registerComponent);
         });
     }
