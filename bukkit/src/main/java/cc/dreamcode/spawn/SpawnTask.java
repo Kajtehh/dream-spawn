@@ -9,7 +9,7 @@ import eu.okaeri.injector.annotation.Inject;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 
-@Scheduler(delay = 0, interval = 20L)
+@Scheduler(delay = 20L, interval = 20L)
 @RequiredArgsConstructor(onConstructor_ = @Inject)
 public class SpawnTask implements Runnable {
 
@@ -22,7 +22,7 @@ public class SpawnTask implements Runnable {
     public void run() {
         long currentTimeMillis = System.currentTimeMillis();
         Bukkit.getOnlinePlayers().forEach(player -> this.spawnManager.getTeleport(player).ifPresent(teleport -> {
-            if(teleport > currentTimeMillis) {
+            if(teleport - currentTimeMillis >= 1000) {
                 this.messageConfig.teleportMessage.forEach(bukkitNotice -> bukkitNotice.send(player, new MapBuilder<String, Object>()
                         .put("time", TimeUtil.formatTime(teleport - currentTimeMillis)).build()));
 
